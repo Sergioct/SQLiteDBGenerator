@@ -1,0 +1,36 @@
+{
+	"tables": [{
+		"name": "PRODUCTO",
+		"rows": [{
+			"fields": [{
+				"name": "NOMBRE",
+				"type": "TEXT",
+				"value": "Café con leche"
+			}, {
+				"name": "COSTE",
+				"type": "REAL",
+				"value": 0.90
+			}]
+		}, {
+			"fields": [{
+                "name": "NOMBRE",
+                "type": "TEXT",
+                "value": "Pincho de Tortilla"
+            }, {
+                "name": "COSTE",
+                "type": "REAL",
+                "value": 2.30
+            }]
+		}, {
+            "fields": [{
+                 "name": "NOMBRE",
+                 "type": "TEXT",
+                 "value": "Toastada con tomate"
+             }, {
+                 "name": "COSTE",
+                 "type": "REAL",
+                 "value": 1.90
+             }]
+        }]
+	}]
+}

@@ -1,0 +1,13 @@
+{
+	"tables": [{
+		"name": "PRODUCTO",
+		"fields": [{
+			"name": "NOMBRE",
+			"type": "TEXT",
+			"isunique":true
+		}, {
+			"name": "COSTE",
+			"type": "REAL"
+		}]
+	}]
+}

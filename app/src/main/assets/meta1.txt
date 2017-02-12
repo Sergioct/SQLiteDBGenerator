@@ -1,0 +1,22 @@
+{
+	"tables": [{
+		"name": "PRIMERA",
+		"fields": [{
+			"name": "COL_PRIMARIA",
+			"type": "TEXT"
+		}, {
+			"name": "COL_UNICA",
+			"type": "TEXT",
+			"isunique": true
+		}, {
+			"name": "COL_ENTERO",
+			"type": "INTEGER"
+		}]
+	}, {
+		"name": "SEGUNDA",
+		"fields": [{
+			"name": "COL_FECHA",
+			"type": "DATE"
+		}]
+	}]
+}

@@ -1,0 +1,60 @@
+{
+	"tables": [{
+		"name": "ALUMNO",
+		"rows": [{
+			"fields": [{
+				"name": "NOMBRE",
+				"type": "TEXT",
+				"value": "Guillermo Perez García"
+			}, {
+				"name": "DNI",
+				"type": "TEXT",
+				"value": "55555555H"
+			}, {
+				"name": "NOTA",
+				"type": "REAL",
+				"value": 8.90
+			}, {
+				"name": "CHICO",
+				"type": "INTEGER",
+				"value": 1
+			}]
+		}, {
+			"fields": [{
+				"name": "NOMBRE",
+				"type": "TEXT",
+				"value": "María Gutierrez Hernandez"
+			}, {
+				"name": "DNI",
+				"type": "TEXT",
+				"value": "44444444A"
+			}, {
+				"name": "NOTA",
+				"type": "REAL",
+				"value": 6.20
+			}, {
+				"name": "CHICO",
+				"type": "INTEGER",
+				"value": 0
+			}]
+		}, {
+			"fields": [{
+				"name": "NOMBRE",
+				"type": "TEXT",
+				"value": "Mariano Hernandez Fernandez"
+			}, {
+				"name": "DNI",
+				"type": "TEXT",
+				"value": "12344321B"
+			}, {
+				"name": "NOTA",
+				"type": "REAL",
+				"value": 4.50
+			}, {
+				"name": "CHICO",
+				"type": "INTEGER",
+				"value": 1
+			}]
+		}]
+	}]
+}

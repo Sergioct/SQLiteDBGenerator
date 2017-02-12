@@ -1,0 +1,55 @@
+{
+	"tables": [{
+		"name": "PRIMERA",
+		"rows": [{
+			"fields": [{
+				"name": "COL_PRIMARIA",
+				"type": "TEXT",
+				"value": "Primer texto"
+			}, {
+				"name": "COL_UNICA",
+				"type": "TEXT",
+				"value": "Primer texto unico"
+			}, {
+				"name": "COL_ENTERO",
+				"type": "INTEGER",
+				"value": 1
+			}]
+		}, {
+			"fields": [{
+				"name": "COL_PRIMARIA",
+				"type": "TEXT",
+				"value": "Segundo texto"
+			}, {
+				"name": "COL_UNICA",
+				"type": "TEXT",
+				"value": "Segundo texto unico"
+			}, {
+				"name": "COL_ENTERO",
+				"type": "INTEGER",
+				"value": 2
+			}]
+		}, {
+			"fields": [{
+				"name": "COL_UNICA",
+				"type": "TEXT",
+				"value": "Cadena única"
+			}]
+		}]
+	}, {
+		"name": "SEGUNDA",
+		"rows": [{
+			"fields": [{
+				"name": "COL_FECHA",
+				"type": "DATE",
+				"value": 1484448189000
+			}]
+		}, {
+			"fields": [{
+				"name": "COL_FECHA",
+				"type": "TEXT",
+				"value": 1484361789000
+			}]
+		}]
+	}]
+}

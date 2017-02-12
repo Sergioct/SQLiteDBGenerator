@@ -1,0 +1,28 @@
+{
+   "tables":[
+      {
+         "name":"ALUMNO",
+         "fields":[
+            {
+               "name":"NOMBRE",
+               "type":"TEXT",
+               "isunique":true
+            },
+            {
+               "name":"DNI",
+               "type":"TEXT",
+               "isunique":true
+            },
+            {
+               "name":"NOTA",
+               "type":"REAL",
+               "isunique":true
+            },
+            {
+               "name":"CHICO",
+               "type":"INTEGER"
+            }
+         ]
+      }
+   ]
+}
