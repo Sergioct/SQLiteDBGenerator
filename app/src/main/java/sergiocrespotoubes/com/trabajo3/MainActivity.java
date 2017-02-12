@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         /* Test 1 */
         db = DBMain.getInstance().createDatabase(this, "database1", "meta1.txt", "data1.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta1.txt");
+        DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta1.txt");
 
         /* Test 2 */
         db = DBMain.getInstance().createDatabase(this, "database2", "meta2.txt");

@@ -375,6 +375,45 @@ public class DBMain {
                                 /* Java classes */
                                 generateJavaClass(path, name, jsonFields);
                                 generateJavaTableRepository(path, name, jsonFields);
+                            }
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void generateIosCrudRepository(Context context, String path, String metadataFile) {
+
+        //Load metadata file
+        JSONObject jsonMetadata = readFile(context, metadataFile);
+
+        if (jsonMetadata != null) {
+            JSONArray jsonTables;
+            JSONObject jsonTable;
+            int numTables;
+            String name;
+            JSONArray jsonFields;
+
+            try {
+                if(jsonMetadata != null && jsonMetadata.has("tables")){
+                    jsonTables = jsonMetadata.getJSONArray("tables");
+                    numTables = jsonTables.length();
+
+                    for (int i = 0; i < numTables; i++) {
+                        jsonTable = jsonTables.getJSONObject(i);
+
+                        if(jsonTable.has("name") && !jsonTable.isNull("name")
+                                && jsonTable.has("fields") && !jsonTable.isNull("fields") ){
+                            name = jsonTable.getString("name");
+
+                            jsonFields = jsonTable.getJSONArray("fields");
+
+                            if(name != null && jsonFields.length() > 0){
+                                name = name.toLowerCase();
+                                name = name.substring(0, 1).toUpperCase() + name.substring(1);
 
                                 /* iOS classes */
                                 generateIosHClass(path, name, jsonFields);
@@ -489,15 +528,6 @@ public class DBMain {
             List<String> lNames = new ArrayList<>();
             List<String> lTypes = new ArrayList<>();
 
-            writer.append("import android.content.ContentValues;\n");
-            writer.append("import android.database.Cursor;\n");
-            writer.append("import java.util.ArrayList;\n");
-            writer.append("import android.database.sqlite.SQLiteDatabase;\n");
-            writer.append("import java.util.List;\n\n");
-
-            writer.append("public class "+className+ "{\n\n");
-            writer.append("\tpublic "+className+ "(){}\n\n");
-
             /* Save names and types fields */
             for (int i = 0; i < numFields; i++) {
                 jsonField = jsonFields.getJSONObject(i);
@@ -514,6 +544,17 @@ public class DBMain {
                     }
                 }
             }
+
+            /* INIT CLASS */
+
+            writer.append("import android.content.ContentValues;\n");
+            writer.append("import android.database.Cursor;\n");
+            writer.append("import java.util.ArrayList;\n");
+            writer.append("import android.database.sqlite.SQLiteDatabase;\n");
+            writer.append("import java.util.List;\n\n");
+
+            writer.append("public class "+className+ "{\n\n");
+            writer.append("\tpublic "+className+ "(){}\n\n");
 
             /* CREATE CURSOR TO RESULT */
             writer.append(String.format("\tprivate static %s cursorToResult(final Cursor cursor) {\n\n", name));
@@ -654,7 +695,8 @@ public class DBMain {
 
             /* Interface */
             writer.append(String.format("@interface %s : NSObject{\n", name));
-            /*
+
+            writer.append("\tNSInteger myid;\n");
             for (int i = 0; i < numFields; i++) {
                 jsonField = jsonFields.getJSONObject(i);
 
@@ -674,7 +716,7 @@ public class DBMain {
                                 fieldType = "NSInteger";
                                 break;
                             case DBHelper.DATE:
-                                fieldType = "@property (nonatomic) long";
+                                fieldType = "long";
                                 break;
                             case DBHelper.REAL:
                                 fieldType = "double";
@@ -684,9 +726,10 @@ public class DBMain {
                     writer.append("\t"+fieldType+" "+fieldName+ ";\n");
                 }
             }
-            writer.append("}\n\n");*/
+            writer.append("}\n\n");
 
             /* Property */
+            writer.append("\t@property (nonatomic) NSInteger myid;\n");
             for (int i = 0; i < numFields; i++) {
                 jsonField = jsonFields.getJSONObject(i);
 
@@ -716,8 +759,6 @@ public class DBMain {
                     writer.append("\t"+fieldType+" "+fieldName+ ";\n");
                 }
             }
-            writer.append("}\n\n");
-
             writer.append("@end");
 
             writer.flush();
@@ -737,7 +778,7 @@ public class DBMain {
                 root.mkdirs();
             }
 
-            File gpxfile = new File(root, name + ".h");
+            File gpxfile = new File(root, name + ".m");
             FileWriter writer = new FileWriter(gpxfile);
             int numFields = jsonFields.length();
             JSONObject jsonField;
@@ -745,7 +786,9 @@ public class DBMain {
             String fieldType;
 
             writer.append(String.format("#import \"%s.h\"\n\n", name));
-            writer.append(String.format("implementation %s\n\n", name));
+            writer.append(String.format("@implementation %s\n\n", name));
+
+            writer.append("\t@synthesize myid;\n");
 
             /* Synthesize */
             for (int i = 0; i < numFields; i++) {
@@ -758,7 +801,7 @@ public class DBMain {
                     writer.append("\t@synthesize "+fieldName+ ";\n");
                 }
             }
-            writer.append("@end");
+            writer.append("\n@end");
 
             writer.flush();
             writer.close();
@@ -774,7 +817,7 @@ public class DBMain {
             String className;
 
             className = name.toLowerCase();
-            className = className.substring(0, 1).toUpperCase() + className.substring(1) + "Repository";
+            className = className.substring(0, 1).toUpperCase() + className.substring(1) + "DAO";
 
             File root = new File(path);
 
@@ -786,17 +829,18 @@ public class DBMain {
             FileWriter writer = new FileWriter(gpxfile);
 
             writer.append("#import <Foundation/Foundation.h>\n");
-            writer.append(String.format("#import %s.h\n\n", name));
+            writer.append("#import <sqlite3.h>\n");
+            writer.append(String.format("#import \"%s.h\"\n\n", name));
 
-            writer.append(String.format("@implementation %sDAO : NSObject{\n"));
-            writer.append("\tsqlite3 *bd\n");
+            writer.append(String.format("@interface %sDAO : NSObject{\n", name));
+            writer.append("\tsqlite3 *bd;\n");
             writer.append("}\n\n");
 
-            writer.append("- (void) create;\n\n");
+            writer.append(String.format("- (void) createObject;:%s item\n\n", name));
             writer.append("- (NSMutableArray *) getAll;\n\n");
-            writer.append("- (NSMutableArray *) getById;\n\n");
-            writer.append("- (void) update;\n\n");
-            writer.append("- (void) delete;\n\n");
+            writer.append("- (NSMutableArray *) getById:(NSInteger)auxid;\n\n");
+            writer.append(String.format("- (void) updateObject;:%s item\n\n", name));
+            writer.append(String.format("- (void) deleteObject;:(NSInteger)auxid\n\n", name));
 
             writer.append("@end");
             writer.flush();
@@ -811,7 +855,7 @@ public class DBMain {
             String className;
 
             className = name.toLowerCase();
-            className = className.substring(0, 1).toUpperCase() + className.substring(1) + "Repository";
+            className = className.substring(0, 1).toUpperCase() + className.substring(1) + "DAO";
 
             File root = new File(path);
 
@@ -819,7 +863,7 @@ public class DBMain {
                 root.mkdirs();
             }
 
-            File gpxfile = new File(root, className + ".java");
+            File gpxfile = new File(root, className + ".m");
             FileWriter writer = new FileWriter(gpxfile);
             int numFields = jsonFields.length();
             JSONObject jsonField;
@@ -827,13 +871,6 @@ public class DBMain {
             String typeName;
             List<String> lNames = new ArrayList<>();
             List<String> lTypes = new ArrayList<>();
-
-            writer.append("#import \"VehiculoDAO.h\"\n");
-            writer.append("#import \"Vehiculo.h\"\n\n");
-            writer.append(String.format("@implementation %sDAO\n\n", name));
-
-            writer.append("public class "+className+ "{\n\n");
-            writer.append("\tpublic "+className+ "(){}\n\n");
 
             /* Save names and types fields */
             for (int i = 0; i < numFields; i++) {
@@ -852,117 +889,103 @@ public class DBMain {
                 }
             }
 
-            /* CREATE CURSOR TO RESULT */
-            writer.append(String.format("\tprivate static %s cursorToResult(final Cursor cursor) {\n\n", name));
-            writer.append(String.format("\t\t%s %s = new %s();\n\n", name, name.toLowerCase(), name));
-            writer.append(String.format("\t\t%s.setId(cursor.getLong(0));\n", name.toLowerCase()));
+            /* INIT CLASS */
 
+            writer.append(String.format("#import \"%sDAO.h\"\n", name));
+            writer.append(String.format("#import \"%s.h\"\n\n", name));
+            writer.append(String.format("@implementation %sDAO\n\n", name));
+
+            /* GET ALL */
+
+            writer.append("- (NSMutableArray *) getAll{\n\n");
+            writer.append(String.format("\t\tconst char *sql =  \"SELECT * FROM %s\";\n\n", name));
+
+            writer.append("}\n\n");
+
+             /* GET BY ID */
+            writer.append("- (NSMutableArray *) getById:(NSInteger)auxid{\n\n");
+            writer.append(String.format("\t\tconst char *sql =  \"SELECT * FROM %s\";\n\n", name));
+
+            writer.append("\tsqlite3_stmt *sqlStatement;\n");
+            writer.append("\tif(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK)\n");
+            writer.append("\t{\n");
+            writer.append(String.format("\t\tsqlite3_bind_text(sqlStatement, 1, [%s.name UTF8String], -1, SQLITE_TRANSIENT);\n", name));
+            writer.append("\t\tsqlite3_step(sqlStatement);\n");
+            writer.append("\t\tsqlite3_finalize(sqlStatement);\n");
+            writer.append("\t\tsqlite3_close(db);\n");
+            writer.append("\t}\n");
+
+            writer.append("\twhile(sqlite3_step(sqlStatement) == SQLITE_ROW){\n");
+            writer.append(String.format("\t\t%s *item = [[%s alloc] init];\n", name, name));
             for (int i = 0; i < numFields; i++) {
                 fieldName = lNames.get(i);
                 typeName = lTypes.get(i);
-                fieldName = fieldName.substring(0, 1).toUpperCase() + fieldName.substring(1);
 
                 switch (typeName){
                     case DBHelper.TEXT:
-                        typeName = "getString";
+                        writer.append(String.format("\t\titem.%s = sqlite3_column_int(sqlStatement, 0);\n", name, fieldName));
                         break;
                     case DBHelper.INTEGER:
-                        typeName = "getInt";
+                        writer.append(String.format("\t\titem.%s = sqlite3_column_int(sqlStatement, 0);\n", name, fieldName));
                         break;
                     case DBHelper.DATE:
-                        typeName = "getLong";
+                        writer.append(String.format("\t\titem.%s = sqlite3_column_int(sqlStatement, 0);\n", name, fieldName));
                         break;
                     case DBHelper.REAL:
-                        typeName = "getDouble";
+                        writer.append(String.format("\t\titem.%s = sqlite3_column_int(sqlStatement, 0);\n", name, fieldName));
                         break;
                 }
-
-                writer.append(String.format("\t\t%s.set%s(cursor.%s(%d));\n",
-                        name.toLowerCase(),
-                        fieldName.substring(0, 1).toUpperCase() + fieldName.toLowerCase().substring(1),
-                        typeName,
-                        i));
             }
+            writer.append("\t[list addObject:item];\n");
 
-            writer.append(String.format("\n\t\treturn %s;\n", name.toLowerCase()));
-            writer.append("\t}\n\n");
+            writer.append("}\n\n");
 
             /* INSERT METHOD */
-            writer.append(String.format("\tpublic static long insert(SQLiteDatabase db, %s %s) {\n\n", name, name.toLowerCase()));
-            writer.append("\t\tContentValues values = new ContentValues();\n");
+
+            writer.append(String.format("-(void)createObject:(%s *)item {\n", name));
+            writer.append("\tfileMgr =[NSFileManager defaultManager];\n");
+
+            writer.append("\tsqlite3_stmt * stmt = nil;");
+
+            String sql = null;
+            String questions = null;
 
             for (int i = 0; i < numFields; i++) {
-
                 fieldName = lNames.get(i);
-
-                writer.append(String.format("\t\tvalues.put(\"%s\", %s.get%s());\n",
-                        fieldName,
-                        name.toLowerCase(),
-                        fieldName.substring(0, 1).toUpperCase() + fieldName.toLowerCase().substring(1)));
+                if(sql != null){
+                    sql += ", "+fieldName;
+                    questions += ", ?";
+                }else{
+                    sql = fieldName;
+                    questions = "?";
+                }
             }
+            writer.append(String.format("\tconst char*sql = \"Insert into %s(%s) %s\";", name, sql, questions));
 
-            writer.append(String.format("\n\t\treturn db.insert(\"%s\", null, values);\n",
-                    name));
-            writer.append("\t}\n\n");
-
-            /* READ METHOD */
-            writer.append(String.format("\tpublic static List<%s> getAll(SQLiteDatabase db) {\n\n", name));
-            writer.append(String.format("\t\t%s item;\n", name));
-            writer.append(String.format("\t\tList<%s>list = new ArrayList<>();\n\n", name));
-            writer.append(String.format("\t\tString selectQuery =  \"SELECT * FROM %s\";\n\n", name));
-            writer.append("\t\tCursor cursor = db.rawQuery(selectQuery, null );\n\n");
-            writer.append("\t\twhile(cursor.moveToNext()){\n");
-            writer.append("\t\t\titem = cursorToResult(cursor);\n");
-            writer.append("\t\t\tlist.add(item);\n");
-            writer.append("\t\t}\n");
-            writer.append("\t\tcursor.close();\n\n");
-            writer.append("\t\treturn list;");
-            writer.append("\t}\n\n");
-
-            writer.append(String.format("\tpublic static List<%s> getById(SQLiteDatabase db, long id) {\n\n", name));
-            writer.append(String.format("\t\t%s item;\n", name));
-            writer.append(String.format("\t\tList<%s>list = new ArrayList<>();\n\n", name));
-            writer.append(String.format("\t\tString selectQuery =  \"SELECT * FROM %s\";\n\n", name));
-            writer.append("\t\tCursor cursor = db.rawQuery(selectQuery, null );\n\n");
-            writer.append("\t\twhile(cursor.moveToNext()){\n");
-            writer.append("\t\t\titem = cursorToResult(cursor);\n");
-            writer.append("\t\t\tlist.add(item);\n");
-            writer.append("\t\t}\n");
-            writer.append("\t\tcursor.close();\n\n");
-            writer.append("\t\treturn list;");
-            writer.append("\t}\n\n");
+            writer.append("\tsqlite3_prepare_v2(db, sql, 1, & stmt, NULL);\n");
+            for (int i = 0; i < numFields; i++) {
+                fieldName = lNames.get(i);
+                writer.append(String.format("\tsqlite3_bind_text(stmt, 2,[item.%s UTF8String],-1, SQLITE_TRANSIENT);\n", fieldName));
+            }
+            writer.append("\tsqlite3_step(stmt);\n");
+            writer.append("\tsqlite3_finalize(stmt);\n");
+            writer.append("}\n\n");
 
             /* UPDATE METHOD */
-            writer.append(String.format("\tpublic static void update(SQLiteDatabase db, %s %s) {\n\n", name, name.toLowerCase()));
-            writer.append("\t\tContentValues values = new ContentValues();\n");
-
-            for (int i = 0; i < numFields; i++) {
-
-                fieldName = lNames.get(i);
-
-                writer.append(String.format("\t\tvalues.put(\"%s\", %s.get%s());\n",
-                        fieldName,
-                        name.toLowerCase(),
-                        fieldName.substring(0, 1).toUpperCase() + fieldName.toLowerCase().substring(1)));
-            }
-
-            writer.append(String.format("\n\t\tdb.update(\"%s\", values, \"ID + = ?\", new String[] {String.valueOf(%s.getId())});\n",
-                    name,
-                    name.toLowerCase()));
-            writer.append("\t}\n\n");
+            writer.append(String.format("- (NSMutableArray *) updateObject:(%s)item{\n\n", name));
+            writer.append(String.format("\tNSString *query = [NSString stringWithFormat:@\"update from %s where myid=auxid\"];\n\n", name));
+            writer.append("\t[self.db executeQuery:query];\n\n");
+            writer.append("}\n\n");
 
             /* DELETE METHOD */
-            writer.append(String.format("\tpublic static void delete(SQLiteDatabase db, %s %s) {\n", name, name.toLowerCase()));
-            writer.append(String.format("\t\tdb.delete(\"%s\", \"ID = %s.getId()\", null);\n", name, name.toLowerCase()));
-            writer.append(String.format("\t}\n\n", className.toLowerCase()));
-
-            writer.append(String.format("\tpublic static void delete(SQLiteDatabase db, int id) {\n", name, name.toLowerCase()));
-            writer.append(String.format("\t\tdb.delete(\"%s\", \"ID =  id\", null);\n", name));
-            writer.append("\t}\n\n");
+            writer.append("- (NSMutableArray *) deleteObject:(NSInteger)auxid{\n\n");
+            writer.append(String.format("\tNSString *query = [NSString stringWithFormat:@\"delete from %s where myid=auxid\"];\n\n", name));
+            writer.append("\t[self.db executeQuery:query];\n\n");
+            writer.append("}\n\n");
 
             /* CLOSE */
 
-            writer.append("}");
+            writer.append("@end");
             writer.flush();
             writer.close();
         } catch (IOException e) {
