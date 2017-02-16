@@ -692,6 +692,7 @@ public class DBMain {
             String fieldType;
 
             writer.append("#import <Foundation/Foundation.h>\n\n");
+            writer.append("#import \"sqlite3.h\"\n\n");
 
             /* Interface */
             writer.append(String.format("@interface %s : NSObject{\n", name));
@@ -836,6 +837,8 @@ public class DBMain {
             writer.append("\tsqlite3 *db;\n");
             writer.append("}\n\n");
 
+            writer.append(String.format("+ (%s *) instance;\n\n", name));
+
             writer.append(String.format("- (void) createObject:(%s*) item;\n\n", name));
             writer.append("- (NSMutableArray *) getAll;\n\n");
             writer.append("- (NSMutableArray *) getById:(NSInteger)auxid;\n\n");
@@ -899,15 +902,14 @@ public class DBMain {
 
             writer.append("- (NSMutableArray *) getAll{\n\n");
             writer.append(String.format("\tconst char *sql =  \"SELECT * FROM %s\";\n\n", name));
-            writer.append("\tlist = [[NSMutableArray alloc] init];\n\n");
-
+            writer.append("\tNSMutableArray * list = [[NSMutableArray alloc] init];\n\n");
 
             writer.append("}\n\n");
 
              /* GET BY ID */
             writer.append(String.format("- (%s *) getById:(NSInteger)auxid{\n\n", name));
             writer.append(String.format("\tconst char *sql =  \"SELECT * FROM %s\";\n\n", name));
-            writer.append(String.format("\t%s item = [[%s * alloc] init];\n\n", name, name));
+            writer.append(String.format("\t%s *item = [[%s alloc] init];\n\n", name, name));
 
             writer.append("\tsqlite3_stmt *sqlStatement;\n");
             writer.append("\tif(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK)\n");
@@ -924,7 +926,7 @@ public class DBMain {
 
                 switch (typeName){
                     case DBHelper.TEXT:
-                        writer.append(String.format("\t\t\titem.%s = sqlite3_column_int(sqlStatement, %d);\n", fieldName.toLowerCase(), i));
+                        writer.append(String.format("\t\t\titem.%s = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, %d)];\n", fieldName.toLowerCase(), i));
                         break;
                     case DBHelper.INTEGER:
                         writer.append(String.format("\t\t\titem.%s = sqlite3_column_int(sqlStatement, %d);\n", fieldName.toLowerCase(), i));
@@ -961,15 +963,33 @@ public class DBMain {
                     questions = "?";
                 }
             }
-            writer.append(String.format("\tconst char*sql = \"Insert into %s(%s) %s\";", name, sql, questions));
+            writer.append(String.format("\tNSString *sqlInsert = \"Insert into %s(%s) %s\";", name, sql, questions));
 
-            writer.append("\tsqlite3_prepare_v2(db, sql, 1, & stmt, NULL);\n");
             for (int i = 0; i < numFields; i++) {
                 fieldName = lNames.get(i);
-                writer.append(String.format("\tsqlite3_bind_text(stmt, 2,[item.%s UTF8String],-1, SQLITE_TRANSIENT);\n", fieldName.toLowerCase()));
+                typeName = lTypes.get(i);
+
+                switch (typeName){
+                    case DBHelper.TEXT:
+                        writer.append(String.format("\t\t\titem.%s = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, %d)];\n", fieldName.toLowerCase(), i));
+                        break;
+                    case DBHelper.INTEGER:
+                        writer.append(String.format("\t\t\titem.%s = sqlite3_column_int(sqlStatement, %d);\n", fieldName.toLowerCase(), i));
+                        break;
+                    case DBHelper.DATE:
+                        writer.append(String.format("\t\t\titem.%s = sqlite3_column_int(sqlStatement, %d);\n", fieldName.toLowerCase(), i));
+                        break;
+                    case DBHelper.REAL:
+                        writer.append(String.format("\t\t\titem.%s = sqlite3_column_int(sqlStatement, %d);\n", fieldName.toLowerCase(), i));
+                        break;
+                }
             }
-            writer.append("\tsqlite3_step(stmt);\n");
-            writer.append("\tsqlite3_finalize(stmt);\n");
+
+            writer.append("\tconst char *sql = [sqlInsert UTF8String];\n");
+            writer.append("\tsqlite3_stmt *sqlStatement;\n");
+            writer.append("\tif(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){\n");
+            writer.append("\tsqlite3_step(sqlStatement);\n");
+            writer.append("\tsqlite3_finalize(sqlStatement);\n");
             writer.append("}\n\n");
 
             /* UPDATE METHOD */
@@ -977,17 +997,21 @@ public class DBMain {
 
             writer.append(String.format("\tNSString * nsstring = [NSString stringWithFormat:@\"update from %s where myid=auxid\"];\n\n", name));
             writer.append("\tconst char *sql = [nsstring cStringUsingEncoding:NSASCIIStringEncoding];");
-            writer.append("\tsqlite3_stmt *sqlStatement;");
-
-            writer.append("\t[self.db executeQuery:query];\n\n");
+            writer.append("\tsqlite3_stmt *sqlStatement;\n");
+            writer.append("\tif(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){\n");
+            writer.append("\tsqlite3_step(sqlStatement);\n");
+            writer.append("\tsqlite3_finalize(sqlStatement);\n");
             writer.append("}\n\n");
 
             /* DELETE METHOD */
             writer.append("- (void) deleteObject:(NSInteger)auxid{\n\n");
+
             writer.append(String.format("\tNSString * nsstring = [NSString stringWithFormat:@\"delete from %s where myid=auxid\"];\n\n", name));
             writer.append("\tconst char *sql = [nsstring cStringUsingEncoding:NSASCIIStringEncoding];");
-            writer.append("\tsqlite3_stmt *sqlStatement;");
-
+            writer.append("\tsqlite3_stmt *sqlStatement;\n");
+            writer.append("\tif(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){\n");
+            writer.append("\tsqlite3_step(sqlStatement);\n");
+            writer.append("\tsqlite3_finalize(sqlStatement);\n");
             writer.append("}\n\n");
 
             /* CLOSE */
