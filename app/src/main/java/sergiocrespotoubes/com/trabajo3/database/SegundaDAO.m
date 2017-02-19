@@ -3,13 +3,25 @@
 
 @implementation SegundaDAO
 
-static Segunda *instance;
+static SegundaDAO *instance;
 
-+ (Segunda *) instance {
++ (SegundaDAO *) instance {
 	if(instance == nil){
-		instance = [[Segunda alloc] init];
+		instance = [[SegundaDAO alloc] init];
 	}
 	return instance;
+}
+
+- (id)init {
+	if ((self = [super init])) {
+		NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+		NSString* documentsDirectory = [paths lastObject];
+		NSString* databasePath = [documentsDirectory stringByAppendingPathComponent:@"database.sqlite3"];
+		if (sqlite3_open([sqLiteDb UTF8String], &db) != SQLITE_OK) {
+			NSLog(@"Failed to open database!");
+		}
+	}
+	return self;
 }
 
 - (NSMutableArray *) getAll{
@@ -21,14 +33,14 @@ static Segunda *instance;
 	Segunda *item = [[Segunda alloc] init];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK)
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK)
 	{
 		if(sqlite3_step(sqlStatement) == SQLITE_ROW){
-			item.col_fecha = sqlite3_column_int(sqlStatement, 0);
+			item.myid = sqlite3_column_int(sqlStatement, 0);
+			item.col_fecha = sqlite3_column_int(sqlStatement, 1);
 		[list addObject:item];
 		}
 		sqlite3_finalize(sqlStatement);
-		sqlite3_close(db);
 	}
 	return list;
 }
@@ -40,13 +52,13 @@ static Segunda *instance;
 	Segunda *item = [[Segunda alloc] init];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK)
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK)
 	{
 		if(sqlite3_step(sqlStatement) == SQLITE_ROW){
-			item.col_fecha = sqlite3_column_int(sqlStatement, 0);
+			item.myid = sqlite3_column_int(sqlStatement, 0);
+			item.col_fecha = sqlite3_column_int(sqlStatement, 1);
 		}
 		sqlite3_finalize(sqlStatement);
-		sqlite3_close(db);
 	}
 	return item;
 }
@@ -58,7 +70,7 @@ static Segunda *instance;
 	const char *sql = [sqlInsert UTF8String];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK){
 		sqlite3_step(sqlStatement);
 		sqlite3_finalize(sqlStatement);
 	}
@@ -67,11 +79,11 @@ static Segunda *instance;
 - (void) updateObject:(Segunda*)item{
 
 
-	const char *sql = [[NSString stringWithFormat:@"update Segunda col_fecha = %ld where id=%ld" , item.col_fecha, item.myid] UTF8String];
+	const char *sql = [[NSString stringWithFormat:@"update Segunda set col_fecha = '%ld' where id=%ld" , item.col_fecha, item.myid] UTF8String];
 
 	sqlite3_stmt *sqlStatement;
 
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK){
 		sqlite3_step(sqlStatement);
 		sqlite3_finalize(sqlStatement);
 	}
@@ -83,7 +95,7 @@ static Segunda *instance;
 	const char *sql = [[NSString stringWithFormat:@"delete from Segunda where myid=%ld",auxid] UTF8String];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK){
 		sqlite3_step(sqlStatement);
 		sqlite3_finalize(sqlStatement);
 	}

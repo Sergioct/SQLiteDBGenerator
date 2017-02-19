@@ -3,13 +3,25 @@
 
 @implementation PrimeraDAO
 
-static Primera *instance;
+static PrimeraDAO *instance;
 
-+ (Primera *) instance {
++ (PrimeraDAO *) instance {
 	if(instance == nil){
-		instance = [[Primera alloc] init];
+		instance = [[PrimeraDAO alloc] init];
 	}
 	return instance;
+}
+
+- (id)init {
+	if ((self = [super init])) {
+		NSArray* paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+		NSString* documentsDirectory = [paths lastObject];
+		NSString* databasePath = [documentsDirectory stringByAppendingPathComponent:@"database.sqlite3"];
+		if (sqlite3_open([sqLiteDb UTF8String], &db) != SQLITE_OK) {
+			NSLog(@"Failed to open database!");
+		}
+	}
+	return self;
 }
 
 - (NSMutableArray *) getAll{
@@ -21,16 +33,16 @@ static Primera *instance;
 	Primera *item = [[Primera alloc] init];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK)
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK)
 	{
 		if(sqlite3_step(sqlStatement) == SQLITE_ROW){
-			item.col_primaria = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 0)];
-			item.col_unica = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 1)];
-			item.col_entero = sqlite3_column_int(sqlStatement, 2);
+			item.myid = sqlite3_column_int(sqlStatement, 0);
+			item.col_primaria = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 1)];
+			item.col_unica = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 2)];
+			item.col_entero = sqlite3_column_int(sqlStatement, 3);
 		[list addObject:item];
 		}
 		sqlite3_finalize(sqlStatement);
-		sqlite3_close(db);
 	}
 	return list;
 }
@@ -42,15 +54,15 @@ static Primera *instance;
 	Primera *item = [[Primera alloc] init];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK)
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK)
 	{
 		if(sqlite3_step(sqlStatement) == SQLITE_ROW){
-			item.col_primaria = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 0)];
-			item.col_unica = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 1)];
-			item.col_entero = sqlite3_column_int(sqlStatement, 2);
+			item.myid = sqlite3_column_int(sqlStatement, 0);
+			item.col_primaria = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 1)];
+			item.col_unica = [NSString stringWithUTF8String:(char *)sqlite3_column_text(sqlStatement, 2)];
+			item.col_entero = sqlite3_column_int(sqlStatement, 3);
 		}
 		sqlite3_finalize(sqlStatement);
-		sqlite3_close(db);
 	}
 	return item;
 }
@@ -62,7 +74,7 @@ static Primera *instance;
 	const char *sql = [sqlInsert UTF8String];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK){
 		sqlite3_step(sqlStatement);
 		sqlite3_finalize(sqlStatement);
 	}
@@ -71,11 +83,11 @@ static Primera *instance;
 - (void) updateObject:(Primera*)item{
 
 
-	const char *sql = [[NSString stringWithFormat:@"update Primera col_primaria = %@, col_unica = %@, col_entero = %ld where id=%ld" , item.col_primaria, item.col_unica, item.col_entero, item.myid] UTF8String];
+	const char *sql = [[NSString stringWithFormat:@"update Primera set col_primaria = '%@', col_unica = '%@', col_entero = '%ld' where id=%ld" , item.col_primaria, item.col_unica, item.col_entero, item.myid] UTF8String];
 
 	sqlite3_stmt *sqlStatement;
 
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK){
 		sqlite3_step(sqlStatement);
 		sqlite3_finalize(sqlStatement);
 	}
@@ -87,7 +99,7 @@ static Primera *instance;
 	const char *sql = [[NSString stringWithFormat:@"delete from Primera where myid=%ld",auxid] UTF8String];
 
 	sqlite3_stmt *sqlStatement;
-	if(sqlite3_prepare_v2(db, sql, 2, &sqlStatement, NULL) == SQLITE_OK){
+	if(sqlite3_prepare_v2(db, sql, -1, &sqlStatement, NULL) == SQLITE_OK){
 		sqlite3_step(sqlStatement);
 		sqlite3_finalize(sqlStatement);
 	}

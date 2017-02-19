@@ -55,7 +55,7 @@ public class AlumnoRepository{
 	public static Alumno getById(SQLiteDatabase db, long id) {
 
 		Alumno item = null;
-		String selectQuery =  "SELECT * FROM Alumno";
+		String selectQuery =  "SELECT * FROM Alumno WHERE ID = ?";
 
 		Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(id)} );
 
@@ -75,14 +75,14 @@ public class AlumnoRepository{
 		values.put("NOTA", alumno.getNota());
 		values.put("CHICO", alumno.getChico());
 
-		db.update("Alumno", values, "ID + = ?", new String[] {String.valueOf(alumno.getId())});
+		db.update("Alumno", values, "ID = ?", new String[] {String.valueOf(alumno.getId())});
 	}
 
 	public static void delete(SQLiteDatabase db, Alumno alumno) {
 		db.delete("Alumno", "ID = ?", new String[] {String.valueOf(alumno.getId())});
 	}
 
-	public static void delete(SQLiteDatabase db, int id) {
+	public static void delete(SQLiteDatabase db, long id) {
 		db.delete("Alumno", "ID =  ?", new String[] {String.valueOf(id)});
 	}
 

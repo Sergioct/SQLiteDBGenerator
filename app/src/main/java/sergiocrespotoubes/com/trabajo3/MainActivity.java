@@ -13,15 +13,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import sergiocrespotoubes.com.dbgenerator.DBMain;
-import sergiocrespotoubes.com.trabajo3.database.Primera;
-import sergiocrespotoubes.com.trabajo3.database.PrimeraRepository;
 
 public class MainActivity extends AppCompatActivity {
 

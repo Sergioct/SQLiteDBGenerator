@@ -51,7 +51,7 @@ public class ProductoRepository{
 	public static Producto getById(SQLiteDatabase db, long id) {
 
 		Producto item = null;
-		String selectQuery =  "SELECT * FROM Producto";
+		String selectQuery =  "SELECT * FROM Producto WHERE ID = ?";
 
 		Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(id)} );
 
@@ -69,14 +69,14 @@ public class ProductoRepository{
 		values.put("NOMBRE", producto.getNombre());
 		values.put("COSTE", producto.getCoste());
 
-		db.update("Producto", values, "ID + = ?", new String[] {String.valueOf(producto.getId())});
+		db.update("Producto", values, "ID = ?", new String[] {String.valueOf(producto.getId())});
 	}
 
 	public static void delete(SQLiteDatabase db, Producto producto) {
 		db.delete("Producto", "ID = ?", new String[] {String.valueOf(producto.getId())});
 	}
 
-	public static void delete(SQLiteDatabase db, int id) {
+	public static void delete(SQLiteDatabase db, long id) {
 		db.delete("Producto", "ID =  ?", new String[] {String.valueOf(id)});
 	}
 

@@ -6,13 +6,13 @@
 	sqlite3 *db;
 }
 
-+ (Primera *) instance;
++ (PrimeraDAO *) instance;
 
 - (void) createObject:(Primera*) item;
 
 - (NSMutableArray *) getAll;
 
-- (NSMutableArray *) getById:(NSInteger)auxid;
+- (Primera *) getById:(NSInteger)auxid;
 
 - (void) updateObject:(Primera*) item;
 

@@ -49,7 +49,7 @@ public class SegundaRepository{
 	public static Segunda getById(SQLiteDatabase db, long id) {
 
 		Segunda item = null;
-		String selectQuery =  "SELECT * FROM Segunda";
+		String selectQuery =  "SELECT * FROM Segunda WHERE ID = ?";
 
 		Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(id)} );
 
@@ -66,14 +66,14 @@ public class SegundaRepository{
 		ContentValues values = new ContentValues();
 		values.put("COL_FECHA", segunda.getCol_fecha());
 
-		db.update("Segunda", values, "ID + = ?", new String[] {String.valueOf(segunda.getId())});
+		db.update("Segunda", values, "ID = ?", new String[] {String.valueOf(segunda.getId())});
 	}
 
 	public static void delete(SQLiteDatabase db, Segunda segunda) {
 		db.delete("Segunda", "ID = ?", new String[] {String.valueOf(segunda.getId())});
 	}
 
-	public static void delete(SQLiteDatabase db, int id) {
+	public static void delete(SQLiteDatabase db, long id) {
 		db.delete("Segunda", "ID =  ?", new String[] {String.valueOf(id)});
 	}
 

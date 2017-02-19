@@ -6,13 +6,13 @@
 	sqlite3 *db;
 }
 
-+ (Alumno *) instance;
++ (AlumnoDAO *) instance;
 
 - (void) createObject:(Alumno*) item;
 
 - (NSMutableArray *) getAll;
 
-- (NSMutableArray *) getById:(NSInteger)auxid;
+- (Alumno *) getById:(NSInteger)auxid;
 
 - (void) updateObject:(Alumno*) item;
 
