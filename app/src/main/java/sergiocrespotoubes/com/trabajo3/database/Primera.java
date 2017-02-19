@@ -1,3 +1,5 @@
+package sergiocrespotoubes.com.trabajo3.database;
+
 public class Primera{
 
 	public Primera(){}

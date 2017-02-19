@@ -1,3 +1,5 @@
+package sergiocrespotoubes.com.trabajo3.database;
+
 import android.content.ContentValues;
 import android.database.Cursor;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ public class SegundaRepository{
 		Segunda segunda = new Segunda();
 
 		segunda.setId(cursor.getLong(0));
-		segunda.setCol_fecha(cursor.getLong(0));
+		segunda.setCol_fecha(cursor.getLong(1));
 
 		return segunda;
 	}
@@ -28,7 +30,7 @@ public class SegundaRepository{
 
 	public static List<Segunda> getAll(SQLiteDatabase db) {
 
-		Segunda item;
+		Segunda item = null;
 		List<Segunda>list = new ArrayList<>();
 
 		String selectQuery =  "SELECT * FROM Segunda";
@@ -41,24 +43,23 @@ public class SegundaRepository{
 		}
 		cursor.close();
 
-		return list;	}
+		return list;
+	}
 
-	public static List<Segunda> getById(SQLiteDatabase db, long id) {
+	public static Segunda getById(SQLiteDatabase db, long id) {
 
-		Segunda item;
-		List<Segunda>list = new ArrayList<>();
-
+		Segunda item = null;
 		String selectQuery =  "SELECT * FROM Segunda";
 
-		Cursor cursor = db.rawQuery(selectQuery, null );
+		Cursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(id)} );
 
-		while(cursor.moveToNext()){
+		if(cursor.moveToNext()){
 			item = cursorToResult(cursor);
-			list.add(item);
 		}
 		cursor.close();
 
-		return list;	}
+		return item;
+	}
 
 	public static void update(SQLiteDatabase db, Segunda segunda) {
 
@@ -69,11 +70,11 @@ public class SegundaRepository{
 	}
 
 	public static void delete(SQLiteDatabase db, Segunda segunda) {
-		db.delete("Segunda", "ID = segunda.getId()", null);
+		db.delete("Segunda", "ID = ?", new String[] {String.valueOf(segunda.getId())});
 	}
 
 	public static void delete(SQLiteDatabase db, int id) {
-		db.delete("Segunda", "ID =  id", null);
+		db.delete("Segunda", "ID =  ?", new String[] {String.valueOf(id)});
 	}
 
 }

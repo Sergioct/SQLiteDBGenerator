@@ -585,7 +585,7 @@ public class DBMain {
                     name.toLowerCase(),
                     fieldName.substring(0, 1).toUpperCase() + fieldName.toLowerCase().substring(1),
                     typeName,
-                    i));
+                    (i+1)));
             }
             
             writer.append(String.format("\n\t\treturn %s;\n", name.toLowerCase()));
@@ -611,7 +611,7 @@ public class DBMain {
 
             /* READ METHOD */
             writer.append(String.format("\tpublic static List<%s> getAll(SQLiteDatabase db) {\n\n", name));
-            writer.append(String.format("\t\t%s item;\n", name));
+            writer.append(String.format("\t\t%s item = null;\n", name));
             writer.append(String.format("\t\tList<%s>list = new ArrayList<>();\n\n", name));
             writer.append(String.format("\t\tString selectQuery =  \"SELECT * FROM %s\";\n\n", name));
             writer.append("\t\tCursor cursor = db.rawQuery(selectQuery, null );\n\n");
@@ -620,20 +620,18 @@ public class DBMain {
             writer.append("\t\t\tlist.add(item);\n");
             writer.append("\t\t}\n");
             writer.append("\t\tcursor.close();\n\n");
-            writer.append("\t\treturn list;");
+            writer.append("\t\treturn list;\n");
             writer.append("\t}\n\n");
 
-            writer.append(String.format("\tpublic static List<%s> getById(SQLiteDatabase db, long id) {\n\n", name));
-            writer.append(String.format("\t\t%s item;\n", name));
-            writer.append(String.format("\t\tList<%s>list = new ArrayList<>();\n\n", name));
-            writer.append(String.format("\t\tString selectQuery =  \"SELECT * FROM %s\";\n\n", name));
-            writer.append("\t\tCursor cursor = db.rawQuery(selectQuery, null );\n\n");
-            writer.append("\t\twhile(cursor.moveToNext()){\n");
+            writer.append(String.format("\tpublic static %s getById(SQLiteDatabase db, long id) {\n\n", name));
+            writer.append(String.format("\t\t%s item = null;\n", name));
+            writer.append(String.format("\t\tString selectQuery =  \"SELECT * FROM %s WHERE ID = ?\";\n\n", name));
+            writer.append("\t\tCursor cursor = db.rawQuery(selectQuery, new String[] { String.valueOf(id)} );\n\n");
+            writer.append("\t\tif(cursor.moveToNext()){\n");
             writer.append("\t\t\titem = cursorToResult(cursor);\n");
-            writer.append("\t\t\tlist.add(item);\n");
             writer.append("\t\t}\n");
             writer.append("\t\tcursor.close();\n\n");
-            writer.append("\t\treturn list;");
+            writer.append("\t\treturn item;\n");
             writer.append("\t}\n\n");
 
             /* UPDATE METHOD */
@@ -650,18 +648,18 @@ public class DBMain {
                         fieldName.substring(0, 1).toUpperCase() + fieldName.toLowerCase().substring(1)));
             }
 
-            writer.append(String.format("\n\t\tdb.update(\"%s\", values, \"ID + = ?\", new String[] {String.valueOf(%s.getId())});\n",
+            writer.append(String.format("\n\t\tdb.update(\"%s\", values, \"ID = ?\", new String[] {String.valueOf(%s.getId())});\n",
                     name,
                     name.toLowerCase()));
             writer.append("\t}\n\n");
 
             /* DELETE METHOD */
             writer.append(String.format("\tpublic static void delete(SQLiteDatabase db, %s %s) {\n", name, name.toLowerCase()));
-            writer.append(String.format("\t\tdb.delete(\"%s\", \"ID = %s.getId()\", null);\n", name, name.toLowerCase()));
+            writer.append(String.format("\t\tdb.delete(\"%s\", \"ID = ?\", new String[] {String.valueOf(%s.getId())});\n", name, name.toLowerCase()));
             writer.append(String.format("\t}\n\n", className.toLowerCase()));
 
-            writer.append(String.format("\tpublic static void delete(SQLiteDatabase db, int id) {\n", name, name.toLowerCase()));
-            writer.append(String.format("\t\tdb.delete(\"%s\", \"ID =  id\", null);\n", name));
+            writer.append(String.format("\tpublic static void delete(SQLiteDatabase db, long id) {\n", name, name.toLowerCase()));
+            writer.append(String.format("\t\tdb.delete(\"%s\", \"ID =  ?\", new String[] {String.valueOf(id)});\n", name));
             writer.append("\t}\n\n");
 
             /* CLOSE */
@@ -947,7 +945,7 @@ public class DBMain {
             writer.append("\treturn list;\n");
             writer.append("}\n\n");
 
-             /* GET BY ID */
+            /* GET BY ID */
             writer.append(String.format("- (%s *) getById:(NSInteger)auxid{\n\n", name));
             writer.append(String.format("\tconst char *sql =  [[NSString stringWithFormat:@\"SELECT * FROM %s where id=%%ld\",auxid] UTF8String];\n\n", name));
             writer.append(String.format("\t%s *item = [[%s alloc] init];\n\n", name, name));

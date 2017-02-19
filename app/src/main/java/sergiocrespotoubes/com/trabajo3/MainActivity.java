@@ -15,15 +15,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import sergiocrespotoubes.com.dbgenerator.DBMain;
+import sergiocrespotoubes.com.trabajo3.database.Primera;
+import sergiocrespotoubes.com.trabajo3.database.PrimeraRepository;
 
 public class MainActivity extends AppCompatActivity {
 
     final String GENERATED_PATH = Environment.getExternalStorageDirectory().toString()+"/Mydata/";
-    SQLiteDatabase db;
+    SQLiteDatabase db0;
+    SQLiteDatabase db1;
+    SQLiteDatabase db2;
 
     Button bt_open_folder;
     int PERMISSION_REQUEST = 5349;
@@ -57,17 +62,39 @@ public class MainActivity extends AppCompatActivity {
     private void havePermissions(){
 
         /* Test 1 */
-        db = DBMain.getInstance().createDatabase(this, "database1", "meta1.txt");
+        db0 = DBMain.getInstance().createDatabase(this, "database1", "meta1.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta1.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta1.txt");
 
+        Primera primera = new Primera();
+        primera.setCol_primaria("Primer texto");
+        primera.setCol_unica("Primer texto unico");
+        primera.setCol_entero(1);
+
+        //Insert
+        long id = PrimeraRepository.insert(db0, primera);
+
+        //GetById
+        Primera primera1 = PrimeraRepository.getById(db0, id);
+
+        // Update
+        primera1.setCol_entero(2);
+        PrimeraRepository.update(db0, primera1);
+
+        //Get All
+        List<Primera>lPrimera = PrimeraRepository.getAll(db0);
+
+        //delete
+        PrimeraRepository.delete(db0, id);
+        lPrimera = PrimeraRepository.getAll(db0);
+
         /* Test 2 */
-        db = DBMain.getInstance().createDatabase(this, "database2", "meta2.txt");
+        db1 = DBMain.getInstance().createDatabase(this, "database2", "meta2.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta2.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta2.txt");
 
         /* Test 3 */
-        db = DBMain.getInstance().createDatabase(this, "database3", "meta3.txt");
+        db2 = DBMain.getInstance().createDatabase(this, "database3", "meta3.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta3.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta3.txt");
     }
