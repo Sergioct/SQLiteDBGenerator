@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
         db0 = DBMain.getInstance().createDatabase(this, "database1", "meta1.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta1.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta1.txt");
-
+        /*
         Primera primera = new Primera();
         primera.setCol_primaria("Primer texto");
         primera.setCol_unica("Primer texto unico");
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
         //delete
         PrimeraRepository.delete(db0, id);
-        lPrimera = PrimeraRepository.getAll(db0);
+        lPrimera = PrimeraRepository.getAll(db0);*/
 
         /* Test 2 */
         db1 = DBMain.getInstance().createDatabase(this, "database2", "meta2.txt");
