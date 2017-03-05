@@ -26,6 +26,9 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase db2;
 
     Button bt_open_folder;
+    Button bt_database1;
+    Button bt_database2;
+
     int PERMISSION_REQUEST = 5349;
 
     @Override
@@ -46,10 +49,27 @@ public class MainActivity extends AppCompatActivity {
         }
 
         bt_open_folder = (Button) findViewById(R.id.bt_open_folder);
+        bt_database1 = (Button) findViewById(R.id.bt_database2);
+        bt_database2 = (Button) findViewById(R.id.bt_database1);
+
         bt_open_folder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFolder();
+            }
+        });
+
+        bt_database1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatabase1();
+            }
+        });
+
+        bt_database2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openDatabase2();
             }
         });
     }
@@ -92,6 +112,16 @@ public class MainActivity extends AppCompatActivity {
         db2 = DBMain.getInstance().createDatabase(this, "database3", "meta3.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta3.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta3.txt");
+    }
+
+    private void openDatabase1(){
+        Intent intent = new Intent(this, DatabaseActivity2.class);
+        startActivity(intent);
+    }
+
+    private void openDatabase2(){
+        Intent intent = new Intent(this, DatabaseActivity2.class);
+        startActivity(intent);
     }
 
     private void openFolder(){

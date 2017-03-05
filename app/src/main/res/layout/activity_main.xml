@@ -16,6 +16,17 @@
         android:layout_height="wrap_content"
         android:text="Hello World!" />
 
+    <Button
+        android:id="@+id/bt_database1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Database 1"/>
+
+    <Button
+        android:id="@+id/bt_database2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Database 2"/>
 
     <Button
         android:id="@+id/bt_open_folder"
