@@ -77,9 +77,10 @@ public class MainActivity extends AppCompatActivity {
     private void havePermissions(){
 
         /* Test 1 */
-        db0 = DBMain.getInstance().createDatabase(this, "database1", "meta1.txt");
+        db0 = DBMain.getInstance().createDatabase(this, "database1", "meta1.txt", "data1.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta1.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta1.txt");
+
         /*
         Primera primera = new Primera();
         primera.setCol_primaria("Primer texto");
@@ -112,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
         db2 = DBMain.getInstance().createDatabase(this, "database3", "meta3.txt");
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta3.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta3.txt");
+
+        /* Generate Layout */
+
     }
 
     private void openDatabase1(){

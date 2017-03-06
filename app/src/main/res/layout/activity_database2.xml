@@ -27,7 +27,7 @@
         android:layout_marginRight="8dp"/>
 
     <Spinner
-        android:id="@+id/spinner_category"
+        android:id="@+id/spinner_value"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"

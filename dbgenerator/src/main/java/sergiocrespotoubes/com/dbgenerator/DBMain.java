@@ -35,7 +35,8 @@ public class DBMain {
     }
 
     public SQLiteDatabase openDatabase(Context context, String databaseName) {
-        return null;
+        DBHelper dbHelper = new DBHelper(context, databaseName);
+        return dbHelper.db;
     }
 
     public SQLiteDatabase createDatabase(Context context, String databaseName, String metadataFile, String dataFile){
