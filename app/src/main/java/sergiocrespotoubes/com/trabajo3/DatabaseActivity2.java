@@ -4,13 +4,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +41,7 @@ public class DatabaseActivity2 extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_database2);
 
-        db = DBMain.getInstance().openDatabase(this, "database1");
+        db = DBMain.getInstance().openDatabase(this, "database2");
 
         loadViews();
         loadTablesList();
@@ -126,6 +124,7 @@ public class DatabaseActivity2 extends AppCompatActivity {
         lValues = new ArrayList<String>();
         lValues.add("*");
         loadValuesGroup();
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, lValues);
         spinner_value.setAdapter(adapter);
     }
@@ -150,49 +149,72 @@ public class DatabaseActivity2 extends AppCompatActivity {
     }
 
     private void loadValuesGroup(){
-        lTables = new ArrayList<>();
-
         Cursor c = db.rawQuery(String.format("SELECT %s FROM %s group by %s", column, table, column), null);
+        String auxValue;
 
-        if (c.moveToFirst()) {
-            while ( !c.isAfterLast() ) {
-                lTables.add(c.getString(0));
-                c.moveToNext();
+        while (c.moveToNext()) {
+            auxValue = c.getString(0);
+
+            if(auxValue != null && !auxValue.equals("")){
+                lValues.add(c.getString(0));
             }
         }
     }
 
+    private void loadByTable(){
+        lItems = new ArrayList<>();
+        Cursor c = db.rawQuery(String.format("SELECT * FROM %s", table), null);
+        loadFromCursor(c);
+    }
+
+    private void loadByColumn(){
+        lItems = new ArrayList<>();
+        Cursor c = db.rawQuery(String.format("SELECT * FROM %s ORDER BY %s", table, column), null);
+        loadFromCursor(c);
+    }
+
     private void loadByType(){
-        lTables = new ArrayList<>();
+        lItems = new ArrayList<>();
+        Cursor c = db.rawQuery(String.format("SELECT * FROM %s WHERE %s='%s'", table, column, value), null);
+        loadFromCursor(c);
+    }
 
-        Cursor c = db.rawQuery(String.format("SELECT * FROM %s WHERE type='%s'", table, value), null);
+    private void loadFromCursor(Cursor c){
 
-        if (c.moveToFirst()) {
-            while ( !c.isAfterLast() ) {
-                lTables.add(c.getString(0));
-                c.moveToNext();
+        int numColumns = c.getColumnCount();
+        String value;
+        String item;
+
+        while (c.moveToNext()) {
+            item = "";
+            for (int i = 0; i < numColumns; i++) {
+
+                item += c.getColumnName(i) + ": ";
+                value = c.getString(i);
+                if(value != null){
+                    item += value;
+                }
+                item += "\n";
             }
+            lItems.add(item);
         }
     }
 
     private void loadData(){
 
-        List<String>lItems = new ArrayList<>();
+        lItems = new ArrayList<>();
 
         if(table != null){
             if(column != null){
                 if(value != null){
-
+                    loadByType();
                 }else{
-
+                    loadByColumn();
                 }
             }else{
-
+                loadByTable();
             }
-        }else{
-
         }
-
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, lItems);
         lv_data.setAdapter(adapter);
     }

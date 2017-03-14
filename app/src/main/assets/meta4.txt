@@ -1,0 +1,28 @@
+{
+   "tables":[
+      {
+         "name":"ALUMNO",
+         "fields":[
+            {
+               "name":"NOMBRE",
+               "type":"TEXT",
+               "isunique":true
+            },
+            {
+               "name":"APELLIDO",
+               "type":"TEXT",
+               "isunique":true
+            },
+            {
+               "name":"EDAD",
+               "type":"INTEGER",
+               "isunique":true
+            },
+            {
+               "name":"CHICO",
+               "type":"INTEGER"
+            }
+         ]
+      }
+   ]
+}

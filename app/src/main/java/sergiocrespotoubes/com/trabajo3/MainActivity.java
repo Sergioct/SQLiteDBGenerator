@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     SQLiteDatabase db0;
     SQLiteDatabase db1;
     SQLiteDatabase db2;
+    SQLiteDatabase db3;
 
     Button bt_open_folder;
     Button bt_database1;
@@ -114,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta3.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta3.txt");
 
+        db3 = DBMain.getInstance().createDatabase(this, "database3", "meta3.txt", "data3.txt");
         /* Generate Layout */
 
     }
