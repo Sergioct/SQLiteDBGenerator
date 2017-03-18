@@ -15,6 +15,10 @@
 				"type": "INTEGER",
 				"value": 28
 			}, {
+                "name": "FECHA",
+                "type": "INTEGER",
+                "value": 1489793448000
+            },{
 				"name": "CHICO",
 				"type": "INTEGER",
 				"value": 1
@@ -33,6 +37,10 @@
                 "type": "INTEGER",
                 "value": 26
             }, {
+                 "name": "FECHA",
+                 "type": "INTEGER",
+                 "value": 1488756648000
+             }, {
                 "name": "CHICO",
                 "type": "INTEGER",
                 "value": 1
@@ -51,6 +59,10 @@
                  "type": "INTEGER",
                  "value": 26
              }, {
+                  "name": "FECHA",
+                  "type": "INTEGER",
+                  "value": 1488843048000
+              }, {
                  "name": "CHICO",
                  "type": "INTEGER",
                  "value": 0
@@ -69,6 +81,10 @@
                  "type": "INTEGER",
                  "value": 27
              }, {
+                  "name": "FECHA",
+                  "type": "INTEGER",
+                  "value": 1488929448000
+              }, {
                  "name": "CHICO",
                  "type": "INTEGER",
                  "value": 1
@@ -87,6 +103,10 @@
                   "type": "INTEGER",
                   "value": 27
               }, {
+                   "name": "FECHA",
+                   "type": "INTEGER",
+                   "value": 1489015848000
+               }, {
                   "name": "CHICO",
                   "type": "INTEGER",
                   "value": 1
@@ -105,6 +125,10 @@
                    "type": "INTEGER",
                    "value": 26
                }, {
+                    "name": "FECHA",
+                    "type": "INTEGER",
+                    "value": 1489102248000
+                }, {
                    "name": "CHICO",
                    "type": "INTEGER",
                    "value": 1
@@ -123,6 +147,10 @@
                   "type": "INTEGER",
                   "value": 26
               }, {
+                   "name": "FECHA",
+                   "type": "INTEGER",
+                   "value": 1489188648000
+               }, {
                   "name": "CHICO",
                   "type": "INTEGER",
                   "value": 1
@@ -141,6 +169,10 @@
                   "type": "INTEGER",
                   "value": 29
               }, {
+                   "name": "FECHA",
+                   "type": "INTEGER",
+                   "value": 1489275048000
+               }, {
                   "name": "CHICO",
                   "type": "INTEGER",
                   "value": 1
@@ -159,6 +191,10 @@
                    "type": "INTEGER",
                    "value": 31
                }, {
+                    "name": "FECHA",
+                    "type": "INTEGER",
+                    "value": 1489361448000
+                }, {
                    "name": "CHICO",
                    "type": "INTEGER",
                    "value": 1
@@ -177,6 +213,10 @@
                     "type": "INTEGER",
                     "value": 26
                 }, {
+                     "name": "FECHA",
+                     "type": "INTEGER",
+                     "value": 1489447848000
+                 }, {
                     "name": "CHICO",
                     "type": "INTEGER",
                     "value": 1
@@ -195,6 +235,10 @@
                  "type": "INTEGER",
                  "value": 28
              }, {
+                  "name": "FECHA",
+                  "type": "INTEGER",
+                  "value": 1489534248000
+              }, {
                  "name": "CHICO",
                  "type": "INTEGER",
                  "value": 0
@@ -213,6 +257,10 @@
                   "type": "INTEGER",
                   "value": 36
               }, {
+                   "name": "FECHA",
+                   "type": "INTEGER",
+                   "value": 1489620648000
+               }, {
                   "name": "CHICO",
                   "type": "INTEGER",
                   "value": 0
@@ -231,6 +279,10 @@
                    "type": "INTEGER",
                    "value": 26
                }, {
+                    "name": "FECHA",
+                    "type": "INTEGER",
+                    "value": 1489707048000
+                }, {
                    "name": "CHICO",
                    "type": "INTEGER",
                    "value": 0

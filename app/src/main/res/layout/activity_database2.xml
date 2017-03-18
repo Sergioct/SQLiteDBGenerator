@@ -4,36 +4,145 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Spinner
-        android:id="@+id/spinner_table"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"/>
+        android:layout_height="wrap_content">
 
-    <Spinner
-        android:id="@+id/spinner_column"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"/>
+        <ImageView
+            android:id="@+id/iv_filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="4dp"
+            android:tint="@android:color/background_dark"
+            android:src="@android:drawable/ic_menu_view"/>
 
-    <Spinner
-        android:id="@+id/spinner_value"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginBottom="8dp"/>
+        <LinearLayout
+            android:id="@+id/ll_spinners"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginRight="32dp"
+            android:layout_marginEnd="32dp">
+
+            <Spinner
+                android:id="@+id/spinner_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinner_column"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
+
+            <Spinner
+                android:id="@+id/spinner_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_filters"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_spinners"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rl_integer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:id="@+id/ll_dates"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/iv_date"
+                    android:layout_toStartOf="@+id/iv_date"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/bt_start_date"
+                        android:text="Fecha inicial"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <Button
+                        android:id="@+id/bt_end_date"
+                        android:text="Fecha Final"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_values"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/iv_date"
+                    android:layout_toStartOf="@+id/iv_date"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_value_start"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:digits="01234567890"
+                        android:hint="Valor mínimo" />
+
+                    <EditText
+                        android:id="@+id/et_value_end"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="numberDecimal"
+                        android:digits="01234567890"
+                        android:hint="Valor final" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/iv_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:tint="@android:color/background_dark"/>
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/et_string"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Cadena de texto"
+                android:visibility="gone"/>
+
+            <Button
+                android:id="@+id/bt_filter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Filter"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
     <View
         android:layout_width="match_parent"

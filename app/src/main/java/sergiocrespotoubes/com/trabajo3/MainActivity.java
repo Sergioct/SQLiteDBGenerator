@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
         DBMain.generateJavaCrudRepository(this, GENERATED_PATH, "meta3.txt");
         DBMain.generateIosCrudRepository(this, GENERATED_PATH, "meta3.txt");
 
-        db3 = DBMain.getInstance().createDatabase(this, "database3", "meta3.txt", "data3.txt");
+        db3 = DBMain.getInstance().createDatabase(this, "database4", "meta4.txt", "data4.txt");
         /* Generate Layout */
 
     }
